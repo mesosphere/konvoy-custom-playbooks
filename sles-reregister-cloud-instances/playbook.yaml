@@ -1,0 +1,17 @@
+---
+# https://www.suse.com/support/kb/doc/?id=000019085
+- name: "re-register SLES instances"
+  hosts: node control-plane
+  any_errors_fatal: true
+  become: yes
+  tasks:
+    - name: "re-register SLES instance"
+      shell: |
+        rm /etc/SUSEConnect
+        rm -f /etc/zypp/{repos,services,credentials}.d/*
+        rm -f /usr/lib/zypp/plugins/services/*
+        sed -i '/^# Added by SMT reg/,+1d' /etc/hosts
+        /usr/sbin/registercloudguest --force-new
+      args:
+        warn: false
+      when: ansible_distribution == 'SLES'
