@@ -14,4 +14,8 @@
         /usr/sbin/registercloudguest --force-new
       args:
         warn: false
+      retries: 5
+      delay: 10
+      register: result
+      until: result.rc == 0
       when: ansible_distribution == 'SLES'
